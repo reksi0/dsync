@@ -195,14 +195,14 @@ func client(dir string, addr string) {
 
 	log.Println("Connected to: ", addr)
 
-	fchan := make(chan fsnotify.Event)
-	go watcher(dir, fchan)
+	fileChan := make(chan fsnotify.Event)
+	go watcher(dir, fileChan)
 
-	ichan := make(chan *ServerMsg)
-	go clientNetworkReader(&conn, ichan)
+	inChan := make(chan *ServerMsg)
+	go clientNetworkReader(&conn, inChan)
 
-	ochan := make(chan *ClientMsg)
-	go clientNetworkWriter(&conn, ochan)
+	outChan := make(chan *ClientMsg)
+	go clientNetworkWriter(&conn, outChan)
 
-	clientLoop(dir, fchan, ichan, ochan)
+	clientLoop(dir, fileChan, inChan, outChan)
 }
